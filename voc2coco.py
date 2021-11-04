@@ -4,8 +4,8 @@ import json
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from tqdm import tqdm
-import re
 
+img_count = 0
 
 def get_label2id(labels_path: str) -> Dict[str, int]:
     """id is 1 start"""
@@ -34,15 +34,10 @@ def get_annpaths(ann_dir_path: str = None,
 
 
 def get_image_info(annotation_root, extract_num_from_imgid=True):
-    path = annotation_root.findtext('path')
-    if path is None:
-        filename = annotation_root.findtext('filename')
-    else:
-        filename = os.path.basename(path)
-    img_name = os.path.basename(filename)
-    img_id = os.path.splitext(img_name)[0]
-    if extract_num_from_imgid and isinstance(img_id, str):
-        img_id = int(re.findall(r'\d+', img_id)[0])
+    global img_count
+    filename = annotation_root.findtext('filename')
+    img_count += 1
+    img_id = img_count
 
     size = annotation_root.find('size')
     width = int(size.findtext('width'))
